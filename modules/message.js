@@ -1,4 +1,5 @@
-const { handleImage, handleMenuOption } = require('./chat');
+const { handleMenuOption } = require('./chat');
+const { handleImage } = require('./image');
 const { registerUserIfNeeded } = require('./user');
 
 const Messages = async (client, db, msg) => {

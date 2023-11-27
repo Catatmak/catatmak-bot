@@ -69,8 +69,6 @@ client.on("ready", () => {
 client.on("message", async (message) => {
   if(message.from != 'status@broadcast') {
     try {
-      app.use(customMiddleware(client, MongoDbClient, message));
-
       await Messages(client, MongoDbClient, message);
     } catch (error) {
       console.log(error);
@@ -180,13 +178,13 @@ app.post("/send-otp", async (req, res) => {
     reports
       .updateOne(filter, updateData, updateOptions)
       .then((result) => {
-        console.log("verify token added:", result);
+        console.log("success send otp");
       })
       .catch((error) => {
-        console.error("error verify token:", error);
+        console.error("failed send otp", error);
       });
 
-    const message = `OTP anda ${otpCode}`
+    const message = `Kode OTP anda ${otpCode}`
 
     // Send the message
     await client.sendMessage(`${phone}@c.us`, message);
