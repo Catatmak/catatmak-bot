@@ -73,7 +73,7 @@ async function handleImage(db, msg, from, type) {
               // handle nan
               if (isNaN(doc.price) || doc.price == 'null000') {
                 doc.price = 0
-                await msg.reply(`Maaf, sepertinya scanner kami tidak tepat, kamu bisa melakukan edit atau hapus melalui web dashboard. \n\n Silahkan ketikan 4`);
+                await msg.reply(`Maaf, sepertinya scanner kami tidak tepat, kamu bisa melakukan edit atau hapus melalui aplikasi. \n\n Silahkan ketikan 4`);
               }
 
               await reports.insertOne(doc);
@@ -99,7 +99,7 @@ async function handleImage(db, msg, from, type) {
           // handle nan
           if (isNaN(doc.price) || doc.price == 'null000') {
             doc.price = 0;
-            await msg.reply(`Maaf, sepertinya scanner kami tidak tepat, kamu bisa melakukan edit atau hapus melalui web dashboard. \n\n Silahkan ketikan 4`);
+            await msg.reply(`Maaf, sepertinya scanner kami tidak tepat, kamu bisa melakukan edit atau hapus melalui aplikasi. \n\n Silahkan ketikan 4`);
           }
 
           await reports.insertOne(doc);
