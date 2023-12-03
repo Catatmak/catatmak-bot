@@ -1,6 +1,9 @@
 require('dotenv').config()
 const { encyptDataAES256Cbc, generatedHmacSha256, decryptDataAES256Cbc } = require('../utils/crypsi');
 const { formatRupiah, sumPrice } = require('../utils/helpers');
+const {
+  v4: uuidv4
+} = require("uuid");
 const constant = require('../utils/constant');
 const today = new Date();
 today.setHours(0, 0, 0, 0); // Set the time to the start of the day
@@ -19,6 +22,8 @@ async function handleMenuOption(db, msg, from, type, split_message) {
     handleOption4(msg);
   } else if(msg.body == "5") {
     handleOption5(msg);
+  } else if(msg.body == "6") {
+    handleOption6(msg);
   } else if(split_message.length > 1) {
     handleInsertByChat(msg, split_message, database, from);
   } else if(!menu.includes(msg.body) && type != "image") {
@@ -72,6 +77,41 @@ async function handleOption4(msg) {
 
 async function handleOption5(msg) {
   await msg.reply(constant.menuOption4);
+}
+
+async function handleOption6(msg) {
+  const uuid = uuidv4();
+  const database = db.db("lapormak");
+  const reports = database.collection("users");
+  const filter = {
+    phone_hmac: generatedHmacSha256(from.split("@")[0])
+  }; // Replace 'your_document_id' with the ID of the document you want to update
+  const updateData = {
+    $set: {
+      token: generatedHmacSha256(uuid),
+      phone: encyptDataAES256Cbc(from.split("@")[0]),
+      updated_at: new Date(),
+      created_at: new Date()
+    }
+  };
+  const updateOptions = {
+    upsert: true // This enables upsert functionality
+  };
+  // Update a single document that matches the filter
+  reports
+    .updateOne(filter, updateData, updateOptions)
+    .then((result) => {
+      console.log("verify token added:", result);
+    })
+    .catch((error) => {
+      console.error("error verify token:", error);
+      return error;
+    });
+
+  const message = `Silahkan buka link di bawah ini untuk melakukan login ke dashboard website.\n\nhttps://lapormak.com/verify?token=${generatedHmacSha256(uuid)}\n*Link akan expired dalam 20 menit.`;
+
+  // Send the message
+  await msg.reply(message);
 }
 
 async function handleInsertByChat(msg, split_message, db, from) {
