@@ -23,7 +23,7 @@ async function handleMenuOption(db, msg, from, type, split_message) {
   } else if(msg.body == "5") {
     handleOption5(msg);
   } else if(msg.body == "6") {
-    handleOption6(msg);
+    handleOption6(msg, db, from);
   } else if(split_message.length > 1) {
     handleInsertByChat(msg, split_message, database, from);
   } else if(!menu.includes(msg.body) && type != "image") {
@@ -79,7 +79,7 @@ async function handleOption5(msg) {
   await msg.reply(constant.menuOption4);
 }
 
-async function handleOption6(msg) {
+async function handleOption6(msg, db, from) {
   const uuid = uuidv4();
   const database = db.db("lapormak");
   const reports = database.collection("users");
