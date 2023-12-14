@@ -12,6 +12,8 @@ async function handleMenuOption(db, msg, from, type, split_message) {
   const menu = ["1", "2", "3", "4"];
   const database = db.db("lapormak");
 
+  console.log(type, 'asdasd')
+
   if (msg.body == "1") {
     handleOption1(msg);
   } else if (msg.body == "2") {
@@ -27,8 +29,6 @@ async function handleMenuOption(db, msg, from, type, split_message) {
   } else if(split_message.length > 1) {
     handleInsertByChat(msg, split_message, database, from);
   } else if(!menu.includes(msg.body) && type != "image") {
-    handleDefaultMenu(msg);
-  } else {
     handleDefaultMenu(msg);
   }
 }
