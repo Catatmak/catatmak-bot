@@ -12,8 +12,6 @@ async function handleMenuOption(db, msg, from, type, split_message) {
   const menu = ["1", "2", "3", "4"];
   const database = db.db("lapormak");
 
-  console.log(type, 'asdasd')
-
   if (msg.body == "1") {
     handleOption1(msg);
   } else if (msg.body == "2") {
@@ -24,8 +22,6 @@ async function handleMenuOption(db, msg, from, type, split_message) {
     handleOption4(msg);
   } else if(msg.body == "5") {
     handleOption5(msg);
-  } else if(msg.body == "6") {
-    handleOption6(msg, db, from);
   } else if(split_message.length > 1) {
     handleInsertByChat(msg, split_message, database, from);
   } else if(!menu.includes(msg.body) && type != "image") {
@@ -63,7 +59,7 @@ async function handleOption3(msg, from, db) {
   if (data.length > 0) {
     let text = `Pengeluaran kamu hari ini 💵\n*${formatRupiah(sumPrice(data))}* \n\n`;
     data.map((item, i) => {
-      text += `${i + 1}. ${decryptDataAES256Cbc(item.outcome_name)} ${formatRupiah(decryptDataAES256Cbc(item.price))}\n`;
+      text += `${i + 1}. ${decryptDataAES256Cbc(item.title)} ${formatRupiah(decryptDataAES256Cbc(item.price))}\n`;
     });
 
     text += '\n⭐ Kamu bisa melakukan update atau hapus data di aplikasi';
@@ -121,12 +117,13 @@ async function handleInsertByChat(msg, split_message, db, from) {
   if(split_message[0].toLowerCase() == 'catatmak') {
     const doc = {
       phone: generatedHmacSha256(from.split("@")[0]),
-      outcome_name: encyptDataAES256Cbc(
+      title: encyptDataAES256Cbc(
         split_message
         .slice(1, split_message.length - 1)
         .join(" ")),
       price: encyptDataAES256Cbc(split_message[split_message.length - 1].split('.').join('')),
       type: 'income',
+      source: 'whatsapp',
       created_at: new Date(),
       updated_at: new Date(),
     };
@@ -156,12 +153,13 @@ async function handleInsertByChat(msg, split_message, db, from) {
 
   const doc = {
     phone: generatedHmacSha256(from.split("@")[0]),
-    outcome_name: encyptDataAES256Cbc(
+    title: encyptDataAES256Cbc(
       split_message
       .slice(0, split_message.length - 1)
       .join(" ")),
     price: encyptDataAES256Cbc(split_message[split_message.length - 1].split('.').join('')),
     type: 'outcome',
+    source: 'whatsapp',
     created_at: new Date(),
     updated_at: new Date(),
   };
