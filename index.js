@@ -108,12 +108,18 @@ app.post("/verify-otp", async (req, res) => {
     const database = MongoDbClient.db("lapormak");
     const users = database.collection("users");
     const filter = { 
-      phone_hmac: generatedHmacSha256(phone)
+      phone_hmac: generatedHmacSha256(phone),
+      otp: generatedHmacSha256(otp)
     };
 
     const checkOtp = await users.findOne({otp: generatedHmacSha256(otp)});
     if(!checkOtp) {
       return res.status(500).json({ success: false, message: "Kode OTP Salah" });
+    }
+
+    const checkPhone = await users.findOne(filter);
+    if(!checkPhone) {
+      return res.status(500).json({ success: false, message: "Nomor HP belum terdaftar" });
     }
 
     const updateData = { 
@@ -125,12 +131,13 @@ app.post("/verify-otp", async (req, res) => {
     };
 
     const updateOptions = {
-      upsert: true
+      upsert: false
     };
 
     await users
       .updateOne(filter, updateData, updateOptions)
       .then((result) => {
+        console.log(result);
         console.log("success verify otp and update token");
       })
       .catch((error) => {
@@ -168,6 +175,7 @@ app.post("/send-otp", async (req, res) => {
       $set: {
         otp: generatedHmacSha256(otpCode),
         phone: encyptDataAES256Cbc(phone),
+        phone_hmac: generatedHmacSha256(phone),
         updated_at: new Date()
       }
     };
@@ -179,6 +187,7 @@ app.post("/send-otp", async (req, res) => {
     reports
       .updateOne(filter, updateData, updateOptions)
       .then((result) => {
+        console.log(result);
         console.log("success send otp");
       })
       .catch((error) => {
