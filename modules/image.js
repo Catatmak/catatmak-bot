@@ -9,6 +9,9 @@ const { encyptDataAES256Cbc, generatedHmacSha256, decryptDataAES256Cbc } = requi
 const { formatRupiah } = require('../utils/helpers');
 const {Storage} = require('@google-cloud/storage');
 const path = require('path');
+const moment = require('moment-timezone');
+const now = moment(new Date());
+const currentDate = now.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
 
 async function handleImage(db, msg, from, type) {
   // Handle image messages
@@ -114,8 +117,8 @@ async function handleImage(db, msg, from, type) {
                 source: 'whatsapp',
                 type: 'outcome',
                 category: '',
-                created_at: new Date(),
-                updated_at: new Date(),
+                created_at: new Date(currentDate),
+                updated_at: new Date(currentDate),
               };
 
               // handle nan
@@ -144,8 +147,8 @@ async function handleImage(db, msg, from, type) {
             source: 'whatsapp',
             type: 'outcome',
             category: '',
-            created_at: new Date(),
-            updated_at: new Date(),
+            created_at: new Date(currentDate),
+            updated_at: new Date(currentDate),
           };
 
           // handle nan

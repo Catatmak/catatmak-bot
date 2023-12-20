@@ -5,6 +5,8 @@ const {
   v4: uuidv4
 } = require("uuid");
 const constant = require('../utils/constant');
+const moment = require('moment-timezone');
+
 const today = new Date();
 today.setHours(0, 0, 0, 0); // Set the time to the start of the day
 
@@ -112,6 +114,8 @@ async function handleOption6(msg, db, from) {
 
 async function handleInsertByChat(msg, split_message, db, from) {
   const reports = db.collection("financials");
+  const now = moment(new Date());
+  const currentDate = now.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
 
   // handle jika chat pemasukan
   if(split_message[0].toLowerCase() == 'catatmak') {
@@ -124,8 +128,8 @@ async function handleInsertByChat(msg, split_message, db, from) {
       price: encyptDataAES256Cbc(split_message[split_message.length - 1].split('.').join('')),
       type: 'income',
       source: 'whatsapp',
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: new Date(currentDate),
+      updated_at: new Date(currentDate),
     };
   
     const result = await reports.insertOne(doc);
@@ -160,8 +164,8 @@ async function handleInsertByChat(msg, split_message, db, from) {
     price: encyptDataAES256Cbc(split_message[split_message.length - 1].split('.').join('')),
     type: 'outcome',
     source: 'whatsapp',
-    created_at: new Date(),
-    updated_at: new Date(),
+    created_at: new Date(currentDate),
+    updated_at: new Date(currentDate),
   };
 
   const result = await reports.insertOne(doc);
